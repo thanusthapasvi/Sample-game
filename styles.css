@@ -103,9 +103,8 @@ main {
 	width: calc(100% - 2rem);
 	height: 90vh;
 	min-width: 380px;
-	margin: 4rem 1rem 0.5rem 1rem;
+	margin: 4rem auto 0.5rem auto;
 	background-color: var(--main-bg);
-	overeflow-y: auto;
 	gap: 0.5rem;
 }
 .score-box {
