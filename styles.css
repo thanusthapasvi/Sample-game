@@ -244,6 +244,12 @@ main {
 	border-radius: 999px;
 	transition: width 0.3s ease-out;
 }
+.monster-hp, .hero-hp {
+	position: absolute;
+	font-size: 0.8rem;
+	text-align: center;
+	width: 100%;
+}
 .hero-image, .monster-image {
 	width: clamp(200px, 25%, 300px);
 	height: auto;
@@ -267,6 +273,43 @@ main {
 	text-align: center;
 	padding: 0.5rem 2rem;
 }
+.hero-profile {
+	top: calc(var(--bars-height) + 40px + 1rem);
+	left: 50%;
+	width: 360px;
+	height: 300px;
+	transform: translateX(-50%);
+	border-radius: 12px;
+	padding: 1rem;
+	background-color: var(--accent);
+	display: none;
+}
+.profile-image-cover {
+	width: 100%;
+	margin-bottom: 1rem;
+}
+.profile-image {
+	width: 200px;
+	height: auto;
+}
+.hero-info {
+	width: 100%;
+	position: relative;
+	align-items: start;
+	padding: 0.5rem;
+	border-radius: 8px;
+	background-color: var(--accent-2);
+}
+.hero-info-left, .hero-info-right {
+	width: 50%;
+}
+.info, .info-main {
+	font-size: 1.2rem;
+	color: white;
+}
+.info-main {
+	font-weight: bold;
+}
 .inventory-box {
 	top: calc(var(--bars-height) + 40px + 1rem);
 	left: 50%;
@@ -276,8 +319,49 @@ main {
 	border-radius: 12px;
 	padding: 1rem;
 	display: none;
-	grid-template-columns: repeat(3, auto);
 	background-color: var(--accent);
+}
+.inventory-info {
+	border-radius: 8px;
+	background-color: var(--accent-2);
+	color: white;
+	font-size: 1.2rem;
+	padding: 0.5rem;
+	position: relative;
+}
+.inventory-info-mark {
+	position: absolute;
+	right: 0.5rem;
+	top: 50%;
+	font-size: 16px;
+	transform: translateY(-50%);
+	background-color: var(--accent);
+	padding: 3px 8px;
+	border-radius: 50%;
+	cursor: pointer;
+}
+.inventory-info-text {
+	position: absolute;
+	width: 100%;
+	top: 2rem;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: rgba(0, 0, 0, 0.5);
+	font-size: 1rem;
+	padding: 0.5rem;
+	border-radius: 8px;
+	color: white;
+	display: none;
+	z-index: 10;
+}
+.inventory-info-mark:hover + .inventory-info-text {
+	display: block;
+}
+
+.inventory-weapons {
+	margin-top: 2rem;
+	display: grid;
+	grid-template-columns: repeat(3, auto);
 	gap: 1rem;
 }
 .weapon-image {
@@ -370,18 +454,6 @@ main {
 	min-height: 540px;
 	gap: 0.5rem;
 	display: none;
-}
-.score-box {
-	gap: 1rem;
-	font-size: 1.3rem;
-	color: var(--text);
-	padding: 0.5rem 1rem;
-	background-color: var(--header-bg);
-}
-.score {
-	font-size: 1.3rem;
-	font-weight: bold;
-	color: var(--text);
 }
 .lucky-game {
 	width: 80%;

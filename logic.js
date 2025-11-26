@@ -33,6 +33,10 @@ const inventoryWindow = document.querySelector(".inventory-box");
 const heroImage = document.querySelector(".hero-image");
 const monsterImage = document.querySelector(".monster-image");
 const shopWindow = document.querySelector(".shop-box");
+const heroWindow = document.querySelector(".hero-profile");
+
+const heroLevelText = document.querySelector(".info-level");
+const heroWeaponText = document.querySelector(".info-weapon");
 
 
 const back = document.querySelector('.top-button1');
@@ -62,19 +66,19 @@ const monsters = [
   {
     name: "slime",
     level: 2,
-    health: 15,
+    health: 20,
     image: "assests/slime.png"
   },
   {
     name: "slime group",
     level: 6,
-    health: 45,
+    health: 60,
     image: "assests/slimeGroup.png"
   },
   {
     name: "beast",
-    level: 8,
-    health: 60,
+    level: 10,
+    health: 150,
     image: "assests/beast1.png"
   },
   {
@@ -163,12 +167,13 @@ function bestWeapon() {
         const cur = inventory[i];
         if(cur.quantity > 0) {
             best = i;
+            break;
         }
     }
     return best;
 }
 currentWeapon = bestWeapon();
-
+hero.onclick = openHero;
 back.onclick = goTown;
 bag.onclick = openInventory;
 button1.onclick = goShop;
@@ -179,6 +184,7 @@ function update(location) {
   monsterStats.style.display = "none";
   heroHealth.style.display = "none";
   inventoryWindow.style.display = "none";
+  heroWindow.style.display = "none";
   heroImage.style.display = "none";
   monsterImage.style.display = "none";
   game.style.background = location["bg"];
@@ -228,14 +234,32 @@ let isInventoryOpen = false;
 function openInventory() {
     updateInventory();
     if(isInventoryOpen) {
-        inventoryWindow.style.display = "none"
-        isInventoryOpen = false
-    }
-    else {
-        inventoryWindow.style.display = "grid";
+        inventoryWindow.style.display = "none";
+        isInventoryOpen = false;
+        dialog.style.display = "block";
+    } else {
+        inventoryWindow.style.display = "flex";
         isInventoryOpen = true;
+        dialog.style.display = "none";
     }
 }
+let isHeroOpen = false;
+let heroFirst = true;
+function openHero() {
+    updateHero();
+    if(isHeroOpen) {
+        heroWindow.style.display = "none";
+        isHeroOpen = false;
+        dialog.style.display = "block";
+    } else {
+        heroWindow.style.display = "flex";
+        isHeroOpen = true;
+        if(!heroFirst)
+            dialog.style.display = "none";
+    }
+    heroFirst = false
+}
+openHero();
 function updateInventory() {
     const stickText = document.querySelector(".weapon1-quanity");
     const daggerText = document.querySelector(".weapon2-quanity");
@@ -249,8 +273,9 @@ function updateInventory() {
     ironSwordText.innerText = inventory[3].quantity;
     diamondSwordText.innerText = inventory[4].quantity;
 }
-function openHero() {
-
+function updateHero() {
+    updateLevel();
+    heroWeaponText.innerText = weapons[currentWeapon].name;
 }
 function buyHealth() {
   if (gold >= 10) {
@@ -309,6 +334,7 @@ function upgradeWeapons() {
         item3.quantity -= 4;
         item4.quantity++;
     }
+    currentWeapon = bestWeapon();
 }
 function goFight() {
   update(locations[3]);
@@ -324,23 +350,25 @@ function goFight() {
   playerProgress(health);
 }
 function monsterProgress(hp) {
+    const monsterHpText = document.querySelector(".monster-hp");
     const monsterCurrentHealth = document.querySelector(".monster-progress");
     let monsterPercent = (hp / monsters[fighting].health) * 100;
     monsterCurrentHealth.style.width = monsterPercent + "%";
+    monsterHpText.innerText = hp + " / " + monsters[fighting].health;
     healthBarColor(monsterCurrentHealth, monsterPercent);
 }
 function playerProgress(hp) {
+    const heroHp = document.querySelector(".hero-hp");
     const playerCurrentHealth = document.querySelector(".hero-progress");
     let playerPercent = (hp / maxHealth) * 100;
     playerCurrentHealth.style.width = playerPercent + "%";
+    heroHp.innerText = hp + " / " + maxHealth;
     healthBarColor(playerCurrentHealth, playerPercent);
 }
 function healthBarColor(name, percent) {
     let color = "#50cc50";
-    console.log(percent);
     if(percent < 60 && percent > 25) {
         color = "#acac50";
-        console.log(percent);
     } else if(percent <= 25) {
         color = "#cc5050";
     }
@@ -376,7 +404,7 @@ function getMonsterAttackValue(level) {
 }
 
 function isMonsterHit() {
-  return Math.random() > .2 || health < 20;
+  return Math.random() > .1 || health < 25;
 }
 
 function dodge() {
@@ -400,9 +428,12 @@ function updateLevel() {
             break;
         } else if(xp > levelXp[i] && xp < levelXp[i + 1]) {
             level = i + 1;
+        } else if (xp == 0) {
+            level = 1;
         }
     }
     levelText.innerText = level;
+    heroLevelText.innerText = level;
 }
 
 function lose() {
@@ -528,25 +559,9 @@ function luckResult(rarity) {
     text.textContent = "You got: " + rarityName;
     score[rarityName]++;
 
-    updateScore();
-
     popup.style.display = "flex";
     okBtn.onclick = function() {
         popup.style.display = "none";
     }
-}
-
-function updateScore() {
-    const commonText = document.querySelector(".common");
-    const rareText = document.querySelector(".rare");
-    const epicText = document.querySelector(".epic");
-    const legendaryText = document.querySelector(".legendary");
-    const mythicText = document.querySelector(".mythic");
-
-    commonText.innerHTML = score["Common"];
-    rareText.innerHTML = score["Rare"];
-    epicText.innerHTML = score["Epic"];
-    legendaryText.innerHTML = score["Legendary"];
-    mythicText.innerHTML = score["Mythic"];
 }
 /* Lucky Block End*/
