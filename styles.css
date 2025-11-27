@@ -173,7 +173,7 @@ main {
 }
 .top-buttons:active, .bottom-buttons:active {
 	transform: scale(0.9);
-	color: var(--accent-2);
+	color: var(--gold);
 }
 .button-icons {
 	width: 28px;
@@ -188,7 +188,7 @@ main {
 	padding: 0.5rem 1rem;
 	gap: 1rem;
 	background-color: var(--accent-2);
-	border-bottom: 3px solid var(--accent);
+	border-bottom: 3px solid var(--gold);
 }
 .hero-stat {
 	color: white;
@@ -308,6 +308,7 @@ main {
 	padding: 0.5rem;
 	border-radius: 8px;
 	background-color: var(--accent-2);
+	border-bottom: 3px solid var(--gold);
 }
 .hero-info-left, .hero-info-right {
 	width: 50%;
@@ -338,6 +339,7 @@ main {
 	font-size: 1.2rem;
 	padding: 0.5rem;
 	position: relative;
+	border-bottom: 3px solid var(--gold);
 }
 .inventory-info-mark {
 	position: absolute;
@@ -390,6 +392,7 @@ main {
 	padding: 8px;
 	overflow: hidden;
 	position: relative;
+	border-bottom: 3px solid var(--gold);
 }
 
 .weapon-name {
@@ -486,39 +489,6 @@ main {
 	width: 300px;
 	height: 300px;
 	background-color: transparent;
-	animation: float 2.5s ease-out infinite;
-}
-@keyframes float {
-	0%, 100% {
-		transform: translateY(0px);
-	}
-	50% {
-		transform: translateY(-15px);
-	}
-}
-.box-1, .box-2, .box-3 {
-	width: 150px;
-	height: 150px;
-	background: repeating-linear-gradient(0deg, var(--chest) 0%, var(--chest) 10px, var(--button-bg) 12px, var(--button-bg) 15px);
-	border: 10px solid gold;
-	transition: all 0.3s ease;
-}
-.box-1 {
-	width: 200px;
-	top: 40%;
-	left: 0;
-	transform: skewY(30deg);
-}
-.box-2 {
-	top: 45%;
-	right: -15%;
-	transform: skewY(-30deg);
-}
-.box-3 {
-	height: 200px;
-	top: -7%;
-	left: 30%;
-	transform: rotate(-28deg) scaleX(1.17) skew(30deg);
 }
 .dot-box {
 	gap: 1rem;

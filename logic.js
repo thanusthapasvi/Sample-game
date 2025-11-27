@@ -6,7 +6,7 @@ const sun = "M480-360q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50
 const currentD = themeIcon.getAttribute('d');
 
 function themeToggle() {
-	body.classList.toggle('dark');
+    body.classList.toggle('dark');
     body.classList.toggle('light');
     if (body.classList.contains('dark')) {
         themeIcon.setAttribute('d', sun);
@@ -14,6 +14,72 @@ function themeToggle() {
     } else {
         themeIcon.setAttribute('d', moon);
         theme.style.color = "#ffffff";
+    }
+}
+
+/* 3D gift box */
+/* for 3d cube parent */
+const container = document.querySelector(".box");
+const containerWidth = container.clientWidth;
+const containerHeight = container.clientHeight;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60, containerWidth/containerHeight, 0.1, 1000);
+camera.position.set(0.75, 0.75, 1.5);
+camera.lookAt(0, 0, 0);
+
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+renderer.setSize(containerWidth, containerHeight);
+container.appendChild(renderer.domElement);
+
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(2, 2, 4);
+scene.add(light);
+
+const light2 = new THREE.DirectionalLight(0xffffff, 1);
+light2.position.set(0.5, 1, 0);
+scene.add(light2);
+
+const loader = new THREE.GLTFLoader();
+
+let gift, lid, bottom;
+loader.load("models/gift box.glb", function (gltf) {
+    gift = gltf.scene;
+    scene.add(gift);
+    gift.scale.set(1.5, 1.5, 1.5);
+
+    lid = gift.getObjectByName("GiftLid");
+    bottom = gift.getObjectByName("GiftBottom");
+});
+
+let lidState = 0; 
+let t = 0;
+function animate() {
+    requestAnimationFrame(animate);
+    if(gift) {
+        gift.rotation.y += 0.003;
+    }
+    if (lidState === 1) {
+        // Opening
+        t += 0.05;
+        lid.position.y = Math.sin(t) * 0.3;
+        
+        if (t >= 0.7) lidState = 2;
+    } 
+    else if (lidState === 2) {
+        // Closing
+        t -= 0.05;
+        lid.position.y = Math.sin(t) * 0.3;
+        
+        if (t <= 0) lidState = 0;
+    }
+    renderer.render(scene, camera);
+}
+animate();
+function playLidAnimation() {
+    if (lidState === 0) {
+        lidState = 1;
+        t = 0;
     }
 }
 
@@ -29,6 +95,9 @@ let monsterHealth;
 
 let isHeroOpen = false;
 let isInventoryOpen = false;
+
+const gameHero = document.querySelector(".game");
+const gameLucky = document.querySelector(".lucky-box");
 
 const game = document.querySelector(".game-window");
 const dialog = document.querySelector(".dialog");
@@ -59,88 +128,88 @@ const monsterName = document.querySelector(".monsterName");
 const monsterLevel = document.querySelector(".monsterLevel");
 
 const weapons = [
-  { name: 'stick', power: 5 },
-  { name: 'dagger', power: 30 },
-  { name: 'hammer', power: 50 },
-  { name: 'iron sword', power: 100 },
-  { name: 'diamond sword', power: 120}
+    { name: 'stick', power: 5 },
+    { name: 'dagger', power: 30 },
+    { name: 'hammer', power: 50 },
+    { name: 'iron sword', power: 100 },
+    { name: 'diamond sword', power: 120 }
 ];
 const monsters = [
-  {
-    name: "slime",
-    level: 2,
-    health: 20,
-    image: "assests/slime.png"
-  },
-  {
-    name: "slime group",
-    level: 6,
-    health: 60,
-    image: "assests/slimeGroup.png"
-  },
-  {
-    name: "beast",
-    level: 10,
-    health: 150,
-    image: "assests/beast1.png"
-  },
-  {
-    name: "dragon",
-    level: 50,
-    health: 800,
-    image: "assests/dragon.png"
-  }
+    {
+        name: "slime",
+        level: 2,
+        health: 20,
+        image: "assests/slime.png"
+    },
+    {
+        name: "slime group",
+        level: 6,
+        health: 60,
+        image: "assests/slimeGroup.png"
+    },
+    {
+        name: "beast",
+        level: 10,
+        health: 150,
+        image: "assests/beast1.png"
+    },
+    {
+        name: "dragon",
+        level: 50,
+        health: 800,
+        image: "assests/dragon.png"
+    }
 ]
 const locations = [
-  {
-    name: "Hero",
-    "button text": ["Shop", "Cave", "Dragon"],
-    "button functions": [goShop, goCave, fightDragon],
-    text: "You are in the town. You see a sign that says \"Store\".",
-    bg: "url('assests/town.jpg')"
-  },
-  {
-    name: "shop",
-    "button text": ["Buy health", "Buy dagger", "Lucky crate"],
-    "button functions": [buyHealth, buyWeapon, buyCrate],
-    text: "You enter the shop.",
-    bg: "url('assests/shop.jpg')"
-  },
-  {
-    name: "cave",
-    "button text": ["slime", "slime group", "fanged beast"],
-    "button functions": [fightSlime, fightSlimeGroup, fightBeast],
-    text: "You enter the cave. You see some monsters.",
-    bg: "url('assests/cave.png')"
-  },
-  {
-    name: "fight",
-    "button text": ["Attack", "Dodge", "Run"],
-    "button functions": [attack, dodge, goTown],
-    text: "You are fighting a monster.",
-    bg: "url('assests/battle.jpg')"
-  },
-  {
-    name: "kill monster",
-    "button text": ["Go to shop", "Explore Cave", "Go to town"],
-    "button functions": [goShop, goCave, goTown],
-    text: 'The monster screams "Arg!" as it dies. You gain experience points and find gold.',
-    bg: "url('assests/battle.jpg')"
-  },
-  {
-    name: "lose",
-    "button text": ["REPLAY?", "REPLAY?", "REPLAY?"],
-    "button functions": [restart, restart, restart],
-    text: "You die. &#x2620;",
-    bg: "url('assests/battle.jpg')"
-  },
-  { 
-    name: "win", 
-    "button text": ["REPLAY?", "REPLAY?", "REPLAY?"], 
-    "button functions": [restart, restart, restart], 
-    text: "You defeat the dragon! YOU WIN THE GAME! &#x1F389;",
-    bg: "url('assests/battle.jpg')"
-  }
+    {
+        name: "Hero",
+        "button text": ["Shop", "Cave", "Dragon"],
+        "button functions": [goShop, goCave, fightDragon],
+        text: "You are in the town. You see a sign that says \"Store\".",
+        bg: "url('assests/town.jpg')"
+    },
+    {
+        name: "shop",
+        "button text": ["Buy health", "Buy dagger", "Lucky Box"],
+        "button functions": [buyHealth, buyWeapon, buyLucky],
+        text: "You enter the shop.",
+        bg: "url('assests/shop.jpg')"
+    },
+    {
+        name: "cave",
+        "button text": ["slime", "slime group", "fanged beast"],
+        "button functions": [fightSlime, fightSlimeGroup, fightBeast],
+        text: "You enter the cave. You see some monsters.",
+        bg: "url('assests/cave.png')"
+    },
+    {
+        name: "fight",
+        "button text": ["Attack", "Dodge", "Run"],
+        "button functions": [attack, dodge, goTown],
+        text: "You are fighting a monster.",
+        bg: "url('assests/battle.jpg')"
+    },
+    {
+        name: "kill monster",
+        "button text": ["Go to shop", "Explore Cave", "Go to town"],
+        "button functions": [goShop, goCave, goTown],
+        text: 'The monster screams "Arg!" as it dies. You gain experience points and find gold.',
+        bg: "url('assests/battle.jpg')"
+    },
+    {
+        name: "lose",
+        "button text": ["REPLAY?", "REPLAY?", "REPLAY?"],
+        "button functions": [restart, restart, restart],
+        text: "You die. &#x2620;",
+        bg: "url('assests/battle.jpg')"
+    },
+    {
+        name: "win",
+        "button text": ["REPLAY?", "REPLAY?", "REPLAY?"],
+        "button functions": [restart, restart, restart],
+        text: "You defeat the dragon! YOU WIN THE GAME! &#x1F389;",
+        bg: "url('assests/battle.jpg')"
+    }
 ];
 const inventory = [
     {
@@ -166,9 +235,9 @@ const inventory = [
 ];
 function bestWeapon() {
     let best = 0;
-    for(let i = inventory.length - 1; i >= 0; i--) {
+    for (let i = inventory.length - 1; i >= 0; i--) {
         const cur = inventory[i];
-        if(cur.quantity > 0) {
+        if (cur.quantity > 0) {
             best = i;
             break;
         }
@@ -184,27 +253,28 @@ button2.onclick = goCave;
 button3.onclick = fightDragon;
 
 function update(location) {
-  isHeroOpen = false;
-  isInventoryOpen = false;
-  monsterStats.style.display = "none";
-  heroHealth.style.display = "none";
-  inventoryWindow.style.display = "none";
-  heroWindow.style.display = "none";
-  heroImage.style.display = "none";
-  monsterImage.style.display = "none";
-  game.style.background = location["bg"];
-  if(location.name == "shop") {
-    shopWindow.style.display = "flex";
-} else {
-    shopWindow.style.display = "none";
-}
-  button1.innerText = location["button text"][0];
-  button2.innerText = location["button text"][1];
-  button3.innerText = location["button text"][2];
-  button1.onclick = location["button functions"][0];
-  button2.onclick = location["button functions"][1];
-  button3.onclick = location["button functions"][2];
-  dialog.innerHTML = location.text;
+    isHeroOpen = false;
+    isInventoryOpen = false;
+    monsterStats.style.display = "none";
+    heroHealth.style.display = "none";
+    inventoryWindow.style.display = "none";
+    heroWindow.style.display = "none";
+    heroImage.style.display = "none";
+    monsterImage.style.display = "none";
+    dialog.style.display = "block";
+    game.style.background = location["bg"];
+    if (location.name == "shop") {
+        shopWindow.style.display = "flex";
+    } else {
+        shopWindow.style.display = "none";
+    }
+    button1.innerText = location["button text"][0];
+    button2.innerText = location["button text"][1];
+    button3.innerText = location["button text"][2];
+    button1.onclick = location["button functions"][0];
+    button2.onclick = location["button functions"][1];
+    button3.onclick = location["button functions"][2];
+    dialog.innerHTML = location.text;
 }
 function goTown() {
     update(locations[0]);
@@ -238,7 +308,7 @@ function fightDragon() {
 function openInventory() {
     goTown();
     updateInventory();
-    if(isInventoryOpen) {
+    if (isInventoryOpen) {
         inventoryWindow.style.display = "none";
         isInventoryOpen = false;
         dialog.style.display = "block";
@@ -252,14 +322,14 @@ let heroFirst = true;
 function openHero() {
     goTown();
     updateHero();
-    if(isHeroOpen) {
+    if (isHeroOpen) {
         heroWindow.style.display = "none";
         isHeroOpen = false;
         dialog.style.display = "block";
     } else {
         heroWindow.style.display = "flex";
         isHeroOpen = true;
-        if(!heroFirst)
+        if (!heroFirst)
             dialog.style.display = "none";
     }
     heroFirst = false
@@ -283,39 +353,50 @@ function updateHero() {
     heroWeaponText.innerText = weapons[currentWeapon].name;
 }
 function buyHealth() {
-  if (gold >= 10) {
-    gold -= 10;
-    maxHealth += 10;
-    health = maxHealth;
-    goldText.innerText = gold;
-    healthText.innerText = maxHealth;
-  } else {
-    dialog.innerText = "You do not have enough gold to buy health.";
-  }
+    if (gold >= 10) {
+        gold -= 10;
+        maxHealth += 10;
+        health = maxHealth;
+        goldText.innerText = gold;
+        healthText.innerText = maxHealth;
+    } else {
+        dialog.innerText = "You do not have enough gold to buy health.";
+    }
 }
 
 function buyWeapon() {
     if (gold >= 30) {
-      gold -= 30;
-      goldText.innerText = gold;
-      let newWeapon = weapons[1].name;
-      dialog.innerText = "You now have a " + newWeapon + ".";
-      addWeapon(newWeapon);
-      dialog.innerText += " inventory updated ";
+        gold -= 30;
+        goldText.innerText = gold;
+        let newWeapon = weapons[1].name;
+        dialog.innerText = "You now have a " + newWeapon + ".";
+        addWeapon(newWeapon);
+        dialog.innerText += " inventory updated ";
     } else {
-      dialog.innerText = "You do not have enough gold to buy a weapon.";
+        dialog.innerText = "You do not have enough gold to buy a weapon.";
     }
 }
-function buyCrate() {
-    if(gold >= 10000) {
+function buyLucky() {
+    if (gold >= 200) {
+        gold -= 200;
+        goldText.innerText = gold;
+        gameHero.style.display = "none";
+        gameLucky.style.display = "flex";
+        setTimeout(() => {
+            const w = container.clientWidth;
+            const h = container.clientHeight;
 
+            renderer.setSize(w, h);
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+        }, 50);
     } else {
         dialog.innerText = "You dont have enough gold";
     }
 }
 function addWeapon(name) {
     const item = inventory.find(i => i.name === name);
-    if(item)
+    if (item)
         item.quantity++;
     else
         console.log("Error adding weapon");
@@ -327,32 +408,32 @@ function upgradeWeapons() {
     const item2 = inventory[2];
     const item3 = inventory[3];
     const item4 = inventory[4];
-    if(item1.quantity == 2) {
+    if (item1.quantity == 2) {
         item1.quantity -= 2;
         item2.quantity++;
     }
-    if(item2.quantity == 3) {
+    if (item2.quantity == 3) {
         item2.quantity -= 3;
         item3.quantity++;
     }
-    if(item3.quantity == 4) {
+    if (item3.quantity == 4) {
         item3.quantity -= 4;
         item4.quantity++;
     }
     currentWeapon = bestWeapon();
 }
 function goFight() {
-  update(locations[3]);
-  monsterHealth = monsters[fighting].health;
-  monsterStats.style.display = "flex";
-  heroHealth.style.display = "flex";
-  heroImage.style.display = "block";
-  monsterImage.style.display = "block";
-  monsterImage.src = monsters[fighting].image;
-  monsterName.innerText = monsters[fighting].name;
-  monsterLevel.innerText = monsters[fighting].level;
-  monsterProgress(monsterHealth);
-  playerProgress(health);
+    update(locations[3]);
+    monsterHealth = monsters[fighting].health;
+    monsterStats.style.display = "flex";
+    heroHealth.style.display = "flex";
+    heroImage.style.display = "block";
+    monsterImage.style.display = "block";
+    monsterImage.src = monsters[fighting].image;
+    monsterName.innerText = monsters[fighting].name;
+    monsterLevel.innerText = monsters[fighting].level;
+    monsterProgress(monsterHealth);
+    playerProgress(health);
 }
 function monsterProgress(hp) {
     const monsterHpText = document.querySelector(".monster-hp");
@@ -372,66 +453,66 @@ function playerProgress(hp) {
 }
 function healthBarColor(name, percent) {
     let color = "#50cc50";
-    if(percent < 60 && percent > 25) {
+    if (percent < 60 && percent > 25) {
         color = "#acac50";
-    } else if(percent <= 25) {
+    } else if (percent <= 25) {
         color = "#cc5050";
     }
     name.style.backgroundColor = color;
 }
 function attack() {
-  dialog.innerText = "The " + monsters[fighting].name + " attacks.";
-  dialog.innerText += " You attack it with your " + weapons[currentWeapon].name + ".";
-  health -= getMonsterAttackValue(monsters[fighting].level);
-  if (isMonsterHit()) {
-    monsterHealth -= weapons[currentWeapon].power + Math.floor(Math.random() * xp) + 1;
-    monsterProgress(monsterHealth);
-  } else {
-    dialog.innerText += " You miss.";
-  }
-  playerProgress(health);
-  monsterProgress(monsterHealth);
-  if (health <= 0) {
-    lose();
-  } else if (monsterHealth <= 0) {
-    if (fighting === 3) {
-      winGame();
+    dialog.innerText = "The " + monsters[fighting].name + " attacks.";
+    dialog.innerText += " You attack it with your " + weapons[currentWeapon].name + ".";
+    health -= getMonsterAttackValue(monsters[fighting].level);
+    if (isMonsterHit()) {
+        monsterHealth -= weapons[currentWeapon].power + Math.floor(Math.random() * xp) + 1;
+        monsterProgress(monsterHealth);
     } else {
-      defeatMonster();
+        dialog.innerText += " You miss.";
     }
-  }
+    playerProgress(health);
+    monsterProgress(monsterHealth);
+    if (health <= 0) {
+        lose();
+    } else if (monsterHealth <= 0) {
+        if (fighting === 3) {
+            winGame();
+        } else {
+            defeatMonster();
+        }
+    }
 }
 
 function getMonsterAttackValue(level) {
-  const hit = (level * 5) - (Math.floor(Math.random() * xp));
-  console.log(hit);
-  return hit > 0 ? hit : 0;
+    const hit = (level * 5) - (Math.floor(Math.random() * xp));
+    console.log(hit);
+    return hit > 0 ? hit : 0;
 }
 
 function isMonsterHit() {
-  return Math.random() > .1 || health < 25;
+    return Math.random() > .1 || health < 25;
 }
 
 function dodge() {
-  dialog.innerText = "You dodge the attack from the " + monsters[fighting].name;
+    dialog.innerText = "You dodge the attack from the " + monsters[fighting].name;
 }
 
 function defeatMonster() {
-  gold += Math.floor(monsters[fighting].level * 6.7);
-  xp += monsters[fighting].level;
-  goldText.innerText = gold;
-  xpText.innerText = xp;
-  updateLevel();
-  update(locations[4]);
+    gold += Math.floor(monsters[fighting].level * 6.7);
+    xp += monsters[fighting].level;
+    goldText.innerText = gold;
+    xpText.innerText = xp;
+    updateLevel();
+    update(locations[4]);
 }
 function updateLevel() {
     const levelXp = [0, 150, 250, 400, 600, 800, 1000, 1300, 1600, 2000];
     let level = 1;
-    for(let i = 1; i < levelXp.length - 1; i++) {
+    for (let i = 1; i < levelXp.length - 1; i++) {
         if (xp > 2000) {
             level = 10;
             break;
-        } else if(xp > levelXp[i] && xp < levelXp[i + 1]) {
+        } else if (xp > levelXp[i] && xp < levelXp[i + 1]) {
             level = i + 1;
         } else if (xp == 0) {
             level = 1;
@@ -442,20 +523,20 @@ function updateLevel() {
 }
 
 function lose() {
-  update(locations[5]);
+    update(locations[5]);
 }
 
 function winGame() {
-  update(locations[6]);
+    update(locations[6]);
 }
 
 function restart() {
-  xp = 0;
-  maxHealth = 100;
-  health = maxHealth;
-  gold = 50;
-  currentWeapon = 0;
-  const inventory = [
+    xp = 0;
+    maxHealth = 100;
+    health = maxHealth;
+    gold = 50;
+    currentWeapon = 0;
+    const inventory = [
         {
             name: weapons[0].name,
             quantity: 1
@@ -477,11 +558,12 @@ function restart() {
             quantity: 0
         }
     ];
-  goldText.innerText = gold;
-  healthText.innerText = health;
-  xpText.innerText = xp;
-  goTown();
+    goldText.innerText = gold;
+    healthText.innerText = health;
+    xpText.innerText = xp;
+    goTown();
 }
+
 
 /* Lucky Block Start*/
 let currentDot = 0;
@@ -493,79 +575,54 @@ let rarities = [
     "var(--legendary)",
     "var(--mythic)"
 ]
+let luckRate = 0.5;
 function luckyBlock() {
     let gameBg = document.querySelector(".lucky-game");
     const dots = document.querySelectorAll(".dot");
     const openText = document.querySelector(".open-text");
-    if(currentDot < dots.length) {
-        let luck = Math.random() < 0.5;
-        console.log(luck);
-        if(luck) {
+    playLidAnimation();
+    if (currentDot < dots.length) {
+        let luck = Math.random() < luckRate;
+        luckRate -= 0.1;
+        console.log("Luck = " + luck + "Rate = " + luckRate);
+        if (luck) {
             rarity++;
             console.log(rarity);
-            boxAni();
         }
         dots[currentDot].classList.add("dot-used");
         currentDot++;
-        if(rarity > 0 && rarity <= 4) {
+        if (rarity > 0 && rarity <= 4) {
             gameBg.style.backgroundColor = rarities[rarity];
         }
-    } else if(currentDot == dots.length) {
+    } else if (currentDot == dots.length) {
         luckResult(rarity);
         rarity = 0;
         currentDot = 0;
+        luckRate = 0.5;
         openText.style.display = "none";
         gameBg.style.backgroundColor = rarities[0];
-        for(let i = 0; i < dots.length; i++) {
+        for (let i = 0; i < dots.length; i++) {
             dots[i].classList.remove("dot-used");
         }
     }
-    if(currentDot == dots.length) {
+    if (currentDot == dots.length) {
         console.log("text");
         openText.style.display = "block";
     }
-}
-function boxAni() {
-    const box1 = document.querySelector(".box-1");
-    const box2 = document.querySelector(".box-2");
-    const box3 = document.querySelector(".box-3");
-
-    box1.animate([
-        {transform: "skewY(30deg) translate(0px)"},
-        {transform: "skewY(30deg) translate(-20px, 20px)"},
-        {transform: "skewY(30deg) translate(0px)"}
-    ], {duration: 300, easing: "ease-out"});
-    box2.animate([
-        {transform: "skewY(-30deg) translate(0px)"},
-        {transform: "skewY(-30deg) translate(20px, 20px)"},
-        {transform: "skewY(-30deg) translate(0px)"}
-    ], {duration: 300, easing: "ease-out"});
-    box3.animate([
-        {transform: "rotate(-28deg) scaleX(1.17) skew(30deg) translate(0px)"},
-        {transform: "rotate(-28deg) scaleX(1.17) skew(30deg) translate(20px, -20px)"},
-        {transform: "rotate(-28deg) scaleX(1.17) skew(30deg) translate(0px)"}
-    ], {duration: 300, easing: "ease-out"});
-}
-
-let score = {
-    Common: 0,
-    Rare: 0,
-    Epic: 0,
-    Legendary: 0,
-    Mythic: 0
 }
 
 function luckResult(rarity) {
     const popup = document.querySelector(".result");
     const text = document.querySelector(".result-text");
     const okBtn = document.querySelector(".ok");
-    const rarityNames = ["Common", "Rare", "Epic", "Legendary", "Mythic"];
-    const rarityName = rarityNames[rarity]
+    const rarityNames = ["stick", "dagger", "hammer", "iron sword", "diamond sword"];
+    const rarityName = rarityNames[rarity];
     text.textContent = "You got: " + rarityName;
-    score[rarityName]++;
-
+    addWeapon(rarityName);
     popup.style.display = "flex";
-    okBtn.onclick = function() {
+    okBtn.onclick = function () {
+        gameLucky.style.display = "none";
+        gameHero.style.display = "flex";
         popup.style.display = "none";
     }
 }
