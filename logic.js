@@ -16,21 +16,18 @@ function themeToggle() {
         theme.style.color = "#ffffff";
     }
 }
+/* 3D Objects containers */
+/* Lucky Box */
+const giftContainer = document.querySelector(".box");
 
-/* 3D gift box */
-/* for 3d cube parent */
-const container = document.querySelector(".box");
-const containerWidth = container.clientWidth;
-const containerHeight = container.clientHeight;
+/* Monster Box */
+const monsterContainer = document.querySelector(".monster-container");
 
+/* 3D setup */
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(60, containerWidth/containerHeight, 0.1, 1000);
-camera.position.set(0.75, 0.75, 1.5);
-camera.lookAt(0, 0, 0);
-
 const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-renderer.setSize(containerWidth, containerHeight);
-container.appendChild(renderer.domElement);
+const loader = new THREE.GLTFLoader();
+/* using renderer.setSize() in functions for reuse. */
 
 const light = new THREE.DirectionalLight(0xffffff, 1);
 light.position.set(2, 2, 4);
@@ -40,31 +37,104 @@ const light2 = new THREE.DirectionalLight(0xffffff, 1);
 light2.position.set(0.5, 1, 0);
 scene.add(light2);
 
-const loader = new THREE.GLTFLoader();
+scene.add(new THREE.AmbientLight(0xffffff, 1));
 
+/* Camera and attaching to conatineer (gift) or Monster container */
+let activeCamera;
+let activeModel = null;
+
+let giftCamera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
+giftCamera.position.set(0.75, 0.75, 1.5);
+
+let monsterCamera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
+monsterCamera.position.set(0.2, 0.5, 1.5);
+
+
+function initCameraForContainer(camera, container) {
+    const w = container.clientWidth;
+    const h = container.clientHeight;
+
+    if (renderer.domElement.parentNode) {
+        renderer.domElement.parentNode.removeChild(renderer.domElement);
+    }
+
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    camera.lookAt(0, 0, 0);
+
+    renderer.setSize(w, h);
+    container.appendChild(renderer.domElement);
+
+    activeCamera = camera;
+}
+
+/* for 3d lucky box */
 let gift, lid, bottom;
-loader.load("models/GiftBox.glb", function (gltf) {
-    gift = gltf.scene;
-    scene.add(gift);
-    gift.scale.set(1.5, 1.5, 1.5);
+function loadGiftBox() {
+    if (activeModel) {
+        scene.remove(activeModel);
+        activeModel = null;
+    }
 
-    lid = gift.getObjectByName("GiftLid");
-    bottom = gift.getObjectByName("GiftBottom");
-});
+    loader.load("models/GiftBox.glb", gltf => {
+        gift = gltf.scene;
 
+        lid = gift.getObjectByName("GiftLid");
+        bottom = gift.getObjectByName("GiftBottom");
+
+        gift.scale.set(1.5, 1.5, 1.5);
+
+        console.log("Gift loaded:", gift);
+        console.log("Gift position:", gift.position);
+        console.log("Gift scale:", gift.scale);
+        console.log("Gift rotation:", gift.rotation);
+        
+        activeModel = gift;
+        scene.add(activeModel);
+    });
+}
+
+/* For 3D Monster */
+let monster;
+function loadMonsterModel(name) {
+    if (activeModel) {
+        scene.remove(activeModel);
+        activeModel = null;
+    }
+
+    loader.load("models/" + name + ".glb", gltf => {
+        monster = gltf.scene;
+
+        monster.scale.set(monsters[fighting].scaleX, monsters[fighting].scaleY, monsters[fighting].scaleZ);
+
+        monster.userData.baseScale = monster.scale.clone();
+
+        activeModel = monster;
+        scene.add(activeModel);
+    },
+        undefined,
+    error => {
+        console.error("Failed to load monster model:", error);
+
+        monsterImage.style.display = "block";
+        monsterImage.src = monsters[fighting].image;
+    });
+}
+
+/* 3d animation loops */
 let lidState = 0; 
 let t = 0;
 function animate() {
     requestAnimationFrame(animate);
     if(gift) {
-        gift.rotation.y += 0.003;
+        gift.rotation.y += 0.01;
     }
     if (lidState === 1) {
         // Opening
         t += 0.05;
         lid.position.y = Math.sin(t) * 0.3;
         
-        if (t >= 0.7) lidState = 2;
+        if (t >= 0.6) lidState = 2;
     } 
     else if (lidState === 2) {
         // Closing
@@ -73,7 +143,21 @@ function animate() {
         
         if (t <= 0) lidState = 0;
     }
-    renderer.render(scene, camera);
+    if(monster) {
+        const t = performance.now() * 0.002;
+
+        const s = 1 + Math.sin(t * 2) * 0.04;
+        const base = monster.userData.baseScale;
+
+        monster.scale.set(
+            base.x * s,
+            base.y * (1 - (s - 1)),
+            base.z * s
+        );
+    }
+    if (activeCamera && renderer.domElement.parentNode) {
+        renderer.render(scene, activeCamera);
+    }
 }
 animate();
 function playLidAnimation() {
@@ -139,25 +223,37 @@ const monsters = [
         name: "slime",
         level: 2,
         health: 20,
-        image: "assests/slime.png"
+        image: "assests/slime.png",
+        scaleX: 0.8,
+        scaleY: 0.6,
+        scaleZ: 0.75
     },
     {
         name: "slime group",
         level: 6,
         health: 60,
-        image: "assests/slimeGroup.png"
+        image: "assests/slimeGroup.png",
+        scaleX: 0.8,
+        scaleY: 0.6,
+        scaleZ: 0.75
     },
     {
         name: "beast",
         level: 10,
         health: 150,
-        image: "assests/beast1.png"
+        image: "assests/beast1.png",
+        scaleX: 0.8,
+        scaleY: 0.6,
+        scaleZ: 0.75
     },
     {
         name: "dragon",
         level: 50,
         health: 800,
-        image: "assests/dragon.png"
+        image: "assests/dragon.png",
+        scaleX: 0.8,
+        scaleY: 0.6,
+        scaleZ: 0.75
     }
 ]
 const locations = [
@@ -382,14 +478,8 @@ function buyLucky() {
         goldText.innerText = gold;
         gameHero.style.display = "none";
         gameLucky.style.display = "flex";
-        setTimeout(() => {
-            const w = container.clientWidth;
-            const h = container.clientHeight;
-
-            renderer.setSize(w, h);
-            camera.aspect = w / h;
-            camera.updateProjectionMatrix();
-        }, 200);
+        initCameraForContainer(giftCamera, giftContainer);
+        loadGiftBox();
     } else {
         dialog.innerText = "You dont have enough gold";
     }
@@ -428,10 +518,13 @@ function goFight() {
     monsterStats.style.display = "flex";
     heroHealth.style.display = "flex";
     heroImage.style.display = "block";
-    monsterImage.style.display = "block";
-    monsterImage.src = monsters[fighting].image;
     monsterName.innerText = monsters[fighting].name;
     monsterLevel.innerText = monsters[fighting].level;
+
+    monsterContainer.style.display = "block";
+    initCameraForContainer(monsterCamera, monsterContainer);
+    loadMonsterModel(monsters[fighting].name);
+
     monsterProgress(monsterHealth);
     playerProgress(health);
 }
@@ -485,7 +578,6 @@ function attack() {
 
 function getMonsterAttackValue(level) {
     const hit = (level * 5) - (Math.floor(Math.random() * xp));
-    console.log(hit);
     return hit > 0 ? hit : 0;
 }
 
@@ -584,10 +676,8 @@ function luckyBlock() {
     if (currentDot < dots.length) {
         let luck = Math.random() < luckRate;
         luckRate -= 0.1;
-        console.log("Luck = " + luck + "Rate = " + luckRate);
         if (luck) {
             rarity++;
-            console.log(rarity);
         }
         dots[currentDot].classList.add("dot-used");
         currentDot++;
@@ -606,7 +696,6 @@ function luckyBlock() {
         }
     }
     if (currentDot == dots.length) {
-        console.log("text");
         openText.style.display = "block";
     }
 }
