@@ -211,6 +211,9 @@ const heroHealth = document.querySelector(".hero-health-stat");
 const monsterName = document.querySelector(".monsterName");
 const monsterLevel = document.querySelector(".monsterLevel");
 
+const monsterDamageText = document.querySelector(".monster-damage");
+const heroDamageText = document.querySelector(".hero-damage");
+
 const weapons = [
     { name: 'stick', power: 5 },
     { name: 'dagger', power: 30 },
@@ -358,6 +361,8 @@ function update(location) {
     heroImage.style.display = "none";
     monsterImage.style.display = "none";
     monsterContainer.style.display = "none";
+    heroDamageText.style.display = "none";
+    monsterDamageText.style.display = "none";
     dialog.style.display = "block";
     game.style.background = location["bg"];
     if (location.name == "shop") {
@@ -557,9 +562,15 @@ function healthBarColor(name, percent) {
 function attack() {
     dialog.innerText = "The " + monsters[fighting].name + " attacks.";
     dialog.innerText += " You attack it with your " + weapons[currentWeapon].name + ".";
-    health -= getMonsterAttackValue(monsters[fighting].level);
+    let heroHitAmount = getMonsterAttackValue(monsters[fighting].level);
+    health -= heroHitAmount;
+    heroDamageText.style.display = "block";
+    heroDamageText.innerText = heroHitAmount;
     if (isMonsterHit()) {
-        monsterHealth -= weapons[currentWeapon].power + Math.floor(Math.random() * xp) + 1;
+        let monsterhitAmount = weapons[currentWeapon].power + Math.floor(Math.random() * xp) + 1;
+        monsterHealth -= monsterhitAmount;
+        monsterDamageText.style.display = "block";
+        monsterDamageText.innerText = monsterhitAmount;
         monsterProgress(monsterHealth);
     } else {
         dialog.innerText += " You miss.";
@@ -575,6 +586,10 @@ function attack() {
             defeatMonster();
         }
     }
+    setTimeout(() => {
+        heroDamageText.style.display = "none";
+        monsterDamageText.style.display = "none";
+    }, 500);
 }
 
 function getMonsterAttackValue(level) {
