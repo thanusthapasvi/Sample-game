@@ -150,6 +150,7 @@ main {
 	cursor: pointer;
 	color: white;
 	transition: all 0.3 ease;
+	transform: scale(1);
 }
 .top-buttons {
 	padding: 4px;
@@ -167,10 +168,7 @@ main {
 	background: linear-gradient(120deg, var(--accent-2), var(--accent));
 	border: 2px solid var(--gold);
 }
-.top-buttons:hover, .bottom-buttons:hover {
-	transform: scale(1.1);
-	color: var(--accent-text);
-}
+
 .top-buttons:active, .bottom-buttons:active {
 	transform: scale(0.9);
 	color: var(--gold);
@@ -559,9 +557,7 @@ main {
 	box-shadow: -3px 3px black;
 	background-color: var(--accent);
 }
-#lucky:hover {
-	transform: scale(1.1);
-}
+
 #lucky:active {
 	transform: translate(-3px, 3px);
 	box-shadow: 0 0 black;
@@ -709,5 +705,14 @@ main {
 	}
 	.bottom-buttons {
 		font-size: 0.8rem;
+	}
+}
+@media(hover: hover) and (pointer: fine) {
+	#lucky:hover {
+		transform: scale(1.1);
+	}
+	.top-buttons:hover, .bottom-buttons:hover {
+		transform: scale(1.1);
+		color: var(--accent-text);
 	}
 }
