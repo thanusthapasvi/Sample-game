@@ -537,7 +537,7 @@ main {
 	background-color: var(--accent-text);
 	text-align: center;
 }
-.shop-box {
+.page-box {
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
@@ -549,7 +549,7 @@ main {
 	border-radius: 12px;
 	display: none;
 }
-.shop-item {
+.page-item {
 	width: 100px;
 	height: 120px;
 	background-color: var(--accent-2);
@@ -559,7 +559,7 @@ main {
 	cursor: pointer;
 	overflow: hidden;
 }
-.shop-item-image {
+.page-item-image {
 	position: absolute;
 	top: 50%;
 	left: 50%;
@@ -567,7 +567,7 @@ main {
 	width: 100px;
 	height: auto;
 }
-.shop-item-name, .shop-item-price {
+.page-item-name, .page-item-price {
 	position: absolute;
 	font-size: 1.1rem;
 	color: white;
@@ -576,11 +576,11 @@ main {
 	text-align: center;
 	z-index: 10;
 }
-.shop-item-name {
+.page-item-name {
 	top: 0;
 	left: 0;
 }
-.shop-item-price {
+.page-item-price {
 	left: 0;
 	bottom: 0;
 }

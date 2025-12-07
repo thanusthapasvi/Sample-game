@@ -170,7 +170,7 @@ const dialog = document.querySelector(".dialog");
 const inventoryWindow = document.querySelector(".inventory-box");
 const heroImage = document.querySelector(".hero-image");
 const monsterImage = document.querySelector(".monster-image");
-const shopWindow = document.querySelector(".shop-box");
+const pageWindow = document.querySelector(".page-box");
 const heroWindow = document.querySelector(".hero-profile");
 
 const heroLevelText = document.querySelector(".info-level");
@@ -346,11 +346,17 @@ function update(location) {
     hero.classList.remove('active-tab');
     bag.classList.remove('active-tab');
     game.style.background = location["bg"];
+
     if (location.name == "shop") {
-        shopWindow.style.display = "flex";
+        pageWindow.style.display = "flex";
+        shopAndMonsters("shop");
+    } else if (location.name == "cave") {
+        pageWindow.style.display = "flex";
+        shopAndMonsters("monsters");
     } else {
-        shopWindow.style.display = "none";
+        pageWindow.style.display = "none";
     }
+
     button1.innerText = location["button text"][0];
     button2.innerText = location["button text"][1];
     button3.innerText = location["button text"][2];
@@ -358,6 +364,56 @@ function update(location) {
     button2.onclick = location["button functions"][1];
     button3.onclick = location["button functions"][2];
     dialog.innerHTML = location.text;
+}
+const shopAndMonsterPage = [
+    {
+        name: "shop",
+        p1: "Buy health",
+        p2: "Buy dagger",
+        p3: "Lucky Box",
+        f1: buyHealth,
+        f2: buyWeapon,
+        f3: buyLucky,
+        img1: "assests/health.png",
+        img2: "assests/dagger.png",
+        img3: "assests/lucky.png",
+        P1: "10 gold",
+        P2: "30 gold",
+        P3: "200 gold"
+    }
+]
+function shopAndMonsters(page) {
+    const pageTiles = document.querySelectorAll('.page-item');
+    const p1s = document.querySelectorAll('.page-item-name');
+    const p2s = document.querySelectorAll('.page-item-price');
+    const imgs = document.querySelectorAll('.page-item-image');
+    if(page === "monsters") {
+        p1s[0].innerText = monsters[0].name;
+        p1s[1].innerText = monsters[1].name;
+        p1s[2].innerText = monsters[2].name;
+        p2s[0].innerText = "level " + monsters[0].level;
+        p2s[1].innerText = "level " + monsters[1].level;
+        p2s[2].innerText = "level " + monsters[2].level;
+        imgs[0].src = monsters[0].image;
+        imgs[1].src = monsters[1].image;
+        imgs[2].src = monsters[2].image;
+        pageTiles[0].onclick = fightSlime;
+        pageTiles[1].onclick = fightSlimeGroup;
+        pageTiles[2].onclick = fightBeast;
+    } else if(page === "shop") {
+        p1s[0].innerText = shopAndMonsterPage[0].p1;
+        p1s[1].innerText = shopAndMonsterPage[0].p2;
+        p1s[2].innerText = shopAndMonsterPage[0].p3;
+        p2s[0].innerText = shopAndMonsterPage[0].P1;
+        p2s[1].innerText = shopAndMonsterPage[0].P2;
+        p2s[2].innerText = shopAndMonsterPage[0].P3;
+        imgs[0].src = shopAndMonsterPage[0].img1;
+        imgs[1].src = shopAndMonsterPage[0].img2;
+        imgs[2].src = shopAndMonsterPage[0].img3;
+        pageTiles[0].onclick = shopAndMonsterPage[0].f1;
+        pageTiles[1].onclick = shopAndMonsterPage[0].f2;
+        pageTiles[2].onclick = shopAndMonsterPage[0].f3;
+    }
 }
 function goTown() {
     update(locations[0]);
@@ -726,15 +782,8 @@ function luckResult(rarity) {
 }
 /* Lucky Block End*/
 
-/* functions for direct div in shop etc */
-const shopItems = document.querySelectorAll('.shop-item');
-shopItems[0].onclick = buyHealth;
-shopItems[1].onclick = buyWeapon;
-shopItems[2].onclick = buyLucky;
-
-
 /* Animations and Visuals */
-document.querySelectorAll('.top-buttons, .bottom-buttons, .shop-item')
+document.querySelectorAll('.top-buttons, .bottom-buttons, .page-item')
 .forEach(btn => {
     btn.addEventListener('click', () => {
         btn.classList.remove('bounce-animation');
