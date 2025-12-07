@@ -180,7 +180,7 @@ main {
 	width: calc(100% - 2rem);
 	height: 90vh;
 	min-width: 380px;
-	margin: 4rem auto 0.5rem auto;
+	margin: 4rem auto auto auto;
 	background-color: var(--main-bg);
 }
 .game {
@@ -190,9 +190,9 @@ main {
 }
 .game-window {
 	width: 70%;
-	height: 90%;
+	height: 100%;
 	overflow: hidden;
-	background: transparent;
+	background-color: transparent;
 	background-attachment: scroll !important;
 	background-size: cover !important;
 	background-position: center !important;
@@ -246,7 +246,7 @@ main {
 }
 .hero-stats {
 	height: 40px;
-	width: clamp(280px, 380px, 480px);
+	width: clamp(280px, 95%, 420px);
 	top: var(--bars-height);
 	left: 50%;
 	transform: translateX(-50%);
