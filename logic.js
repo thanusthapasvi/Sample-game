@@ -387,6 +387,14 @@ function shopAndMonsters(page) {
     const p1s = document.querySelectorAll('.page-item-name');
     const p2s = document.querySelectorAll('.page-item-price');
     const imgs = document.querySelectorAll('.page-item-image');
+    pageTiles.forEach(tile => {
+        tile.classList.add('appear');
+    });
+    setTimeout(() => {
+        pageTiles.forEach(tile => {
+            tile.classList.remove('appear');
+        });
+    }, 400);
     if(page === "monsters") {
         p1s[0].innerText = monsters[0].name;
         p1s[1].innerText = monsters[1].name;
@@ -429,21 +437,28 @@ function goCave() {
 
 function fightSlime() {
     fighting = 0;
-    goFight();
+    fightTimeOut()
 }
 function fightSlimeGroup() {
     fighting = 1;
-    goFight();
+    fightTimeOut()
 }
 function fightBeast() {
     fighting = 2;
-    goFight();
+    fightTimeOut()
 }
-
 function fightDragon() {
     fighting = 3;
-    goFight();
+    fightTimeOut()
 }
+
+function fightTimeOut() {
+    //to play animation of bounse for page tiles in cave
+    setTimeout(() => {
+        goFight();
+    }, 400);
+}
+
 function openInventory() {
     goTown();
     updateInventory();
@@ -786,8 +801,9 @@ function luckResult(rarity) {
 document.querySelectorAll('.top-buttons, .bottom-buttons, .page-item')
 .forEach(btn => {
     btn.addEventListener('click', () => {
-        btn.classList.remove('bounce-animation');
-        void btn.offsetWidth;
         btn.classList.add('bounce-animation');
+        setTimeout(() => {
+            btn.classList.remove('bounce-animation');
+        }, 400);
     });
 });
