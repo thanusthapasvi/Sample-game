@@ -750,6 +750,9 @@ main {
 	.bottom-buttons {
 		font-size: 0.9rem;
 	}
+	.bottom-bar {
+		gap: 2.5rem;
+	}
 }
 @media(max-width: 550px) {
 	.score-box, .score {
@@ -767,6 +770,9 @@ main {
 	.info, .info-main {
 		font-size: 1rem;
 	}
+	.bottom-bar {
+		gap: 2rem;
+	}
 }
 @media(max-width: 480px) {
 	.score-box, .score {
@@ -779,7 +785,7 @@ main {
 		font-size: 0.8rem;
 	}
 	.bottom-buttons {
-		font-size: 0.9rem;
+		font-size: 0.8rem;
 	}
 }
 @media(hover: hover) and (pointer: fine) {
