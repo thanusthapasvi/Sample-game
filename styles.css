@@ -13,7 +13,7 @@
 	--dot-c2: rgba(25, 25, 100, 0.9);
 
 	--bars-height: 3.5rem;
-	--dialog-bg: rgba(0, 0, 0, 0.4);
+	--dialog-bg: rgba(0, 0, 0, 0.5);
 
 	--bg: rgb(120, 120, 200);
 	--header-bg: rgb(150, 150, 255);
@@ -184,13 +184,14 @@ main {
 	background-color: var(--main-bg);
 }
 .game {
+	min-width: 380px;
 	margin: 0.5rem;
 	padding: 0.5rem;
 	display: flex;
 }
 .game-window {
-	width: 70%;
-	height: 100%;
+	width: clamp(360px, 70%, 1200px);
+	height: 90%;
 	overflow: hidden;
 	background-color: transparent;
 	background-attachment: scroll !important;
@@ -200,17 +201,20 @@ main {
 	transition: all 0.4s ease-in-out;
 }
 .top-bar, .bottom-bar {
-	left: 0;
+	left: 50%;
+	width: calc(clamp(380px, 70%, 1200px) - 2rem);
+	transform: translateX(-50%);
 	height: var(--bars-height);
 	background-color: var(--accent);
 	gap: 3rem;
 	z-index: 10;
+	border-radius: 8px;
 }
 .top-bar {
-	top: 0;
+	top: calc(var(--bars-height) + 1.5rem);
 }
 .bottom-bar {
-	bottom: 0;
+	bottom: 1rem;
 }
 .top-buttons, .bottom-buttons {
 	position: relative;
@@ -367,12 +371,13 @@ main {
 	top: calc(var(--bars-height) + 80px);
 }
 .dialog {
+	width: calc(clamp(380px, 70%, 1200px) - 2rem);
 	min-height: 2rem;
-	left: 0;
-	bottom: calc(var(--bars-height) + 0.5rem);
+	left: 50%;
+	bottom: calc(var(--bars-height) + 2rem);
 	background-color: var(--dialog-bg);
 	color: white;
-	font-size: 1.2rem;
+	transform: translateX(-50%);
 	text-align: center;
 	padding: 0.5rem 2rem;
 }
@@ -715,17 +720,11 @@ main {
 	.monster-stat {
 		font-size: 0.95rem;
 	}
-	.game-window {
-		width: 80%;
-	}
 	.bottom-buttons {
 		font-size: 1rem;
 	}
 }
 @media(max-width: 650px) {
-	.game-window {
-		width: 90%;
-	}
 	.monster-stat {
 		font-size: 0.9rem;
 	}
@@ -753,9 +752,6 @@ main {
 	}
 }
 @media(max-width: 550px) {
-	.game-window {
-		width: 100%;
-	}
 	.score-box, .score {
 		font-size: 1rem;
 	}
@@ -783,7 +779,7 @@ main {
 		font-size: 0.8rem;
 	}
 	.bottom-buttons {
-		font-size: 0.8rem;
+		font-size: 0.9rem;
 	}
 }
 @media(hover: hover) and (pointer: fine) {
