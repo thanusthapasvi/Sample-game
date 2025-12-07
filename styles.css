@@ -229,17 +229,14 @@ main {
 	font-size: 0.8rem;
 	border: none;
 }
-
-.bottom-button-cover {
-	padding: 3px;
-	border: 2px solid transparent;
-}
 .bottom-buttons {
 	padding: 6px 8px;
 	font-size: 1.2rem;
 	background: linear-gradient(to bottom, var(--accent-2) 60%, var(--accent-text) 90%);
 	border: none;
+	transition: all 0.2s ease;
 }
+
 .button-icons {
 	width: 28px;
 	height: 28px;
@@ -793,8 +790,16 @@ main {
 	#lucky:hover {
 		transform: scale(1.1);
 	}
-	.bottom-button-cover:hover {
-		border: 2px solid var(--gold);
+	.bottom-buttons:focus, .top-buttons:focus {
+		outline: 3px solid white;
+	}
+	.bottom-buttons {
+		outline: 2px solid black;
+		outline-offset: -5px;
+	}
+	.bottom-buttons:hover {
+		outline: 3px solid var(--gold);
+		outline-offset: 4px;
 	}
 	.top-buttons:hover {
 		color: var(--accent-text);
