@@ -162,6 +162,8 @@ let monsterHealth;
 let isHeroOpen = false;
 let isInventoryOpen = false;
 
+let isButtonSoundEnabled = true;
+
 const gameHero = document.querySelector(".game");
 const gameLucky = document.querySelector(".lucky-box");
 
@@ -280,7 +282,7 @@ const locations = [
         name: "lose",
         "button text": ["REPLAY?", "REPLAY?", "REPLAY?"],
         "button functions": [restart, restart, restart],
-        text: "You die. &#x2620;",
+        text: "Game Over. You die. &#x2620;",
         bg: "url('assests/battle.jpg')"
     },
     {
@@ -346,6 +348,8 @@ function update(location) {
     hero.classList.remove('active-tab');
     bag.classList.remove('active-tab');
     game.style.background = location["bg"];
+
+    buttonSoundEnabled = true;
 
     if (location.name == "shop") {
         pageWindow.style.display = "flex";
@@ -424,14 +428,18 @@ function shopAndMonsters(page) {
     }
 }
 function goTown() {
+    playTeleportAudio();
     update(locations[0]);
 }
 
 function goShop() {
+    playTeleportAudio();
+    buttonSoundEnabled = false;
     update(locations[1]);
 }
 
 function goCave() {
+    playTeleportAudio()
     update(locations[2]);
 }
 
@@ -521,18 +529,21 @@ function updateHero() {
 }
 function buyHealth() {
     if (gold >= 10) {
+        playBuySuccessAudio();
         gold -= 10;
         maxHealth += 10;
         health = maxHealth;
         goldText.innerText = gold;
         healthText.innerText = maxHealth;
     } else {
+        playBuyFailAudio();
         dialog.innerText = "You do not have enough gold to buy health.";
     }
 }
 
 function buyWeapon() {
     if (gold >= 30) {
+        playBuySuccessAudio();
         gold -= 30;
         goldText.innerText = gold;
         let newWeapon = weapons[1].name;
@@ -540,11 +551,13 @@ function buyWeapon() {
         addWeapon(newWeapon);
         dialog.innerText += " inventory updated ";
     } else {
+        playBuyFailAudio();
         dialog.innerText = "You do not have enough gold to buy a weapon.";
     }
 }
 function buyLucky() {
     if (gold >= 200) {
+        playBuySuccessAudio();
         gold -= 200;
         goldText.innerText = gold;
         gameHero.style.display = "none";
@@ -552,6 +565,7 @@ function buyLucky() {
         initCameraForContainer(giftCamera, giftContainer);
         loadGiftBox();
     } else {
+        playBuyFailAudio();
         dialog.innerText = "You dont have enough gold";
     }
 }
@@ -584,6 +598,7 @@ function upgradeWeapons() {
     currentWeapon = bestWeapon();
 }
 function goFight() {
+    buttonSoundEnabled = false;
     update(locations[3]);
     monsterHealth = monsters[fighting].health;
     monsterStats.style.display = "flex";
@@ -651,6 +666,11 @@ function attack() {
             defeatMonster();
         }
     }
+    if(currentWeapon < 3) {
+        playWeaponAudio();
+    } else {
+        playSwordAudio();
+    }
     setTimeout(() => {
         heroDamageText.style.display = "none";
         monsterDamageText.style.display = "none";
@@ -697,10 +717,12 @@ function updateLevel() {
 
 function lose() {
     update(locations[5]);
+    playLoseAudio();
 }
 
 function winGame() {
     update(locations[6]);
+    playWinAudio();
 }
 
 function restart() {
@@ -807,3 +829,55 @@ document.querySelectorAll('.top-buttons, .bottom-buttons, .page-item')
         }, 400);
     });
 });
+
+
+//audio
+document.querySelectorAll('.top-buttons, .bottom-buttons')
+.forEach(btn => {
+    const buttonAudio = document.getElementById('button-sound');
+    buttonAudio.currentTime = 0;
+    btn.addEventListener('click', () => {
+        if (!buttonSoundEnabled) return; 
+        buttonAudio.play();
+    });
+});
+
+function playWinAudio() {
+    const winAudio = document.getElementById('win-sound');
+    winAudio.currentTime = 0;
+    winAudio.play();
+}
+function playLoseAudio() {
+    const loseAudio = document.getElementById('lose-sound');
+    loseAudio.currentTime = 0;
+    loseAudio.play();
+}
+
+function playTeleportAudio() {
+    const teleportAudio = document.getElementById('teleport-sound');
+    teleportAudio.currentTime = 0;
+    teleportAudio.volume = 0.3;
+    teleportAudio.play();
+}
+
+function playBuySuccessAudio() {
+    const buySuccessAudio = document.getElementById("buy-success-sound");
+    buySuccessAudio.currentTime = 0;
+    buySuccessAudio.play();
+}
+function playBuyFailAudio() {
+    const buyFailAudio = document.getElementById("buy-fail-sound");
+    buyFailAudio.currentTime = 0;
+    buyFailAudio.play();
+}
+
+function playWeaponAudio() {
+    const weaponAudio = document.getElementById('weapon-sound');
+    weaponAudio.currentTime = 0;
+    weaponAudio.play();
+}
+function playSwordAudio() {
+    const swordAudio = document.getElementById('sword-sound');
+    swordAudio.currentTime = 0;
+    swordAudio.play();
+}

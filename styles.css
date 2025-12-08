@@ -318,7 +318,7 @@ main {
 }
 .monster-container {
 	right: 0;
-	top: calc(var(--bars-height) + 80px);
+	top: calc(var(--bars-height) + 90px);
 	width: clamp(150px, 25%, 300px);
 	aspect-ratio: 1 / 1;
 	display: block;
@@ -792,7 +792,7 @@ main {
 	#lucky:hover {
 		transform: scale(1.1);
 	}
-	.bottom-buttons:focus, .top-buttons:focus {
+	.bottom-buttons:focus-visible, .top-buttons:focus-visible {
 		outline: 3px solid white;
 	}
 	.bottom-buttons {
