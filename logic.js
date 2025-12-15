@@ -424,6 +424,7 @@ function update(location) {
     game.style.background = location["bg"];
 
     if (location.name == "shop") {
+        pageWindow.style.display = "none";
         shopPageWindow.classList.remove('floating-ani');
         shopPageWindow.style.display = "block";
         shopPage();
@@ -431,6 +432,7 @@ function update(location) {
             shopPageWindow.classList.add('floating-ani');
         }, 500);
     } else if (location.name == "cave") {
+        shopPageWindow.style.display = "none";
         pageWindow.style.display = "flex";
         monstersPage();
     } else {
