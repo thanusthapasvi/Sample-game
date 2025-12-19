@@ -340,6 +340,7 @@ let level;
 let maxHealth;
 let health;
 let currentWeapon;
+let currentHero;
 let inventory;
 
 const weapons = [
@@ -454,12 +455,14 @@ const shop = document.querySelector('.top-button2');
 const bag = document.querySelector('.top-button3');
 const hero = document.querySelector('.top-button4');
 
-const monsterStats = document.querySelector(".monster-battle-stats");
 const goldText = document.querySelector(".goldText");
 const xpText = document.querySelector(".xpText");
 const levelText = document.querySelector(".levelText");
 const healthText = document.querySelector(".healthText");
+
+const monsterStats = document.querySelector(".monster-battle-stats");
 const heroBattleStats = document.querySelector(".hero-battle-stats");
+const heroBattleSkills = document.querySelector(".hero-skills");
 const monsterName = document.querySelector(".monsterName");
 const monsterLevel = document.querySelector(".monsterLevel");
 
@@ -531,6 +534,12 @@ const heroSkills = [
         name: "Energy Slash",
         energyCost: 40,
         power: 50
+    },
+    {
+        skillId: 2,
+        name: "Multi Cut",
+        energyCost: 40,
+        power: 40
     }
 ]
 const heros = [
@@ -538,7 +547,8 @@ const heros = [
         name: "dragon repeller",
         normalSkill: 0,
         energySkill: 1,
-        attackPower: 50
+        attackPower: 50,
+        skills: [0, 1, 2]
     }
 ]
 const locations = [
@@ -591,11 +601,22 @@ function bestWeapon() {
     return best;
 }
 currentWeapon = bestWeapon();
-back.onclick = goTown;
+updateHero();
 
+//attacks
+
+function skillButtons() {
+    const skillIcons = document.querySelectorAll(".skills");
+    skillIcons[0].onclick = () => attack(heros[currentHero].skills[0]);
+    skillIcons[1].onclick = () => attack(heros[currentHero].skills[1]);
+    skillIcons[2].onclick = () => attack(heros[currentHero].skills[2]);
+    skillIcons[3].onclick = goTown;
+}
+skillButtons();
 function update(location) {
     monsterStats.style.display = "none";
     heroBattleStats.style.display = "none";
+    heroBattleSkills.style.display = "none";
     inventoryWindow.style.display = "none";
     heroWindow.style.display = "none";
     heroImage.style.display = "none";
@@ -620,6 +641,13 @@ function update(location) {
     
     if(location.name == "fight") {
         energy = 0;
+        leftButton.style.display = "none";
+        rightButton.style.display = "none";
+        mainButton.style.display = "none";
+    } else {
+        leftButton.style.display = "block";
+        rightButton.style.display = "block";
+        mainButton.style.display = "block";
     }
     dialog.innerHTML = location.text;
     saveGame();
@@ -655,6 +683,7 @@ function goTown() {
     playTeleportAudio();
     buttonSoundEnabled = false;
     update(locations[0]);
+    targetRotation = 0;
 }
 
 let isShopOpen = false;
@@ -964,15 +993,18 @@ function energyPulseAnimation() {
 function goFight() {
     buttonSoundEnabled = true;
     update(locations[2]);
+
     monsterHealth = monsters[fighting].health;
-    monsterStats.style.display = "flex";
-    heroBattleStats.style.display = "flex";
-    heroImage.style.display = "block";
     monsterName.innerText = monsters[fighting].name;
     monsterLevel.innerText = monsters[fighting].level;
-    energyBox.style.display = "flex";
 
+    monsterStats.style.display = "flex";
+    heroBattleStats.style.display = "flex";
+    heroBattleSkills.style.display = "grid";
+    heroImage.style.display = "block";
+    energyBox.style.display = "flex";
     monsterContainer.style.display = "block";
+
     initCameraForContainer(monsterCamera, monsterContainer);
     loadMonsterModel(monsters[fighting].name);
 
@@ -1007,7 +1039,7 @@ function healthBarColor(name, percent) {
 }
 function attack(skill) {
     skill = Number(skill);
-    
+    console.log(typeof skill);
     if (isMonsterHit()) {
         if(energy >= heroSkills[skill].energyCost) {
             dialog.innerText = "The " + monsters[fighting].name + " attacks. ";
@@ -1175,7 +1207,7 @@ function luckResult(rarity) {
 /* Lucky Block End*/
 
 /* Animations and Visuals */
-document.querySelectorAll('.top-buttons, .page-item, .shop-page-item')
+document.querySelectorAll('.bar-buttons, .page-item, .shop-page-item, .skills')
 .forEach(btn => {
     btn.addEventListener('click', () => {
         btn.classList.add('bounce-animation');
@@ -1227,7 +1259,7 @@ function animateNumber(textElement, start, end) {
 }
 
 //audio
-document.querySelectorAll('.top-buttons')
+document.querySelectorAll('.bar-buttons')
 .forEach(btn => {
     const buttonAudio = document.getElementById('button-sound');
     buttonAudio.currentTime = 0;

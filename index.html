@@ -9,6 +9,19 @@
 <body class="position-relative">
 	<header class="padding-5 width100 position-fixed flex flex-align flex-justify shadow-down">
 		<h1 class="text">Dragon Game</h1>
+		<p class="game-info-mark">?
+			<span class="game-info-text info-text">
+				Welcome.<br>
+				=> Defeat the Dragon to win the game!<br>
+				=> Use the buttons to navigate.<br>
+				=> Defeat monsters to gain <span class="xp-icon-text">Xp</span> and <span class="gold-icon-text">Gold</span>.<br>
+				=> Use <span class="gold-icon-text">Gold</span> to buy <span class="health-icon-text">Health</span> & Weapons in the
+				shop.<br>
+				=> the best weapon you have will be used automatically in battle.<br>
+				=> Weapons will automatically combined to upgrade to weapon of next tier (see ? in inventory for more info).<br>
+				Good luck!
+			</span>
+		</p>
 	</header>
 	<div id="loader-overlay">
 		<div class="spinner">
@@ -20,42 +33,25 @@
 		<p>Loading Game...</p>
 	</div>
 	<main class="flex flex-align flex-justify position-fixed">
-		<div class="game flex-align flex-justify">
+		<div class="game flex-justify">
 			<div class="game-window flex flex-align flex-justify flex-column position-relative">
-				<img src="assests/hero.png" aria-label="hero" class="hero-image position-absolute" />
-				<div class="monster-container position-absolute"></div>
-				<img src="assests/beast1.png" aria-label="monster" class="monster-image position-absolute" />
-				<p class="monster-damage position-absolute">0</p>
-				<p class="hero-damage position-absolute">0</p>
-				<div class="top-bar flex flex-align flex-justify position-fixed">
-					<button class="top-buttons top-button1">
+				<div class="button-bar flex flex-align flex-justify position-fixed">
+					<button class="bar-buttons top-button1" onclick="goTown()">
 						<img src="assests/ic_back.svg" aria-label="back button" class="button-icons" />
 						Back
 					</button>
-					<button class="top-buttons top-button2" onclick="goShop()">
+					<button class="bar-buttons top-button2" onclick="goShop()">
 						<img src="assests/ic_shop.svg" aria-label="back button" class="button-icons" />
 						Shop
 					</button>
-					<button class="top-buttons top-button3" onclick="openInventory()">
+					<button class="bar-buttons top-button3" onclick="openInventory()">
 						<img src="assests/ic_inventory.svg" aria-label="back button" class="button-icons" />
 						Inventory
-						<div class="inventory position-absolute"></div>
 					</button>
-					<button class="top-buttons top-button4" onclick="openHero()">
+					<button class="bar-buttons top-button4" onclick="openHero()">
 						<img src="assests/ic_hero.svg" aria-label="back button" class="button-icons" />
 						Hero
 					</button>
-					<p class="game-info-mark">?</p>
-					<p class="game-info-text info-text">
-						Welcome.<br>
-						=> Defeat the Dragon to win the game!<br>
-						=> Use the buttons above and below to navigate.<br>
-						=> Defeat monsters to gain <span class="xp-icon-text">Xp</span> and <span class="gold-icon-text">Gold</span>.<br>
-						=> Use <span class="gold-icon-text">Gold</span> to buy <span class="health-icon-text">Health</span> & Weapons in the shop.<br>
-						=> the best weapon you have will be used automatically in battle.<br>
-						=> Weapons will automatically combined to upgrade to weapon of next tier (see ? in inventory for more info).<br>
-						Good luck!
-					</p>
 				</div>
 				<button class="button main-button" aria-label="Button 1">Enter Shop</button>
 				<button class="nav-button left-button">Cave</button>
@@ -152,10 +148,16 @@
 						</div>
 					</div>
 				</div>
+				<!-- Battle Elements -->
+				<img src="assests/hero.png" aria-label="hero" class="hero-image position-absolute" />
+				<div class="monster-container position-absolute"></div>
+				<img src="assests/beast1.png" aria-label="monster" class="monster-image position-absolute" />
+				<p class="monster-damage position-absolute">0</p>
+				<p class="hero-damage position-absolute">0</p>
 				<div class="monster-battle-stats flex-align flex-column flex-justify position-absolute">
 					<div class="stats-top flex flex-align">
-						<p class="battle-stats">Monster: <span class="monsterName">Slime Group</span></p>
-						<p class="battle-stats">level: <span class="monsterLevel">1</span></p>
+						<p class="battle-stats"><span class="monsterName">Slime Group</span></p>
+						<p class="battle-stats">lv<span class="monsterLevel">1</span></p>
 					</div>
 					<div class="progress-bar-cover">
 						<p class="monster-hp">45 / 45</p>
@@ -164,39 +166,12 @@
 				</div>
 				<div class="hero-battle-stats position-absolute flex-align flex-justify flex-column">
 					<div class="stats-top flex flex-align">
-						<p class="battle-stats">Hero: <span class="heroName">Hero</span></p>
-						<p class="battle-stats">level: <span class="heroLevel">1</span></p>
+						<p class="battle-stats"><span class="heroName">Hero</span></p>
+						<p class="battle-stats">lv<span class="heroLevel">1</span></p>
 					</div>
 					<div class="progress-bar-cover">
 						<p class="hero-hp">100 / 100</p>
 						<div class="hero-progress progress-bar"></div>
-					</div>
-				</div>
-				<div class="hero-stats flex flex-align position-fixed">
-					<div class="game-element-icon xp-icon position-relative">
-						<p class="game-element-text xp-info-text">
-							Increase <span class="xp-icon-text">Level</span> by getting <span class="xp-icon-text">xp</span> from
-							monsters to improve your damage
-						</p>
-						<div class="icon-text-bg">
-							<div class="xp-progress-bar progress-bar"></div>
-							<span class="xpText">0</span>
-						</div>
-						<span class="levelText">1</span>
-					</div>
-					<div class="game-element-icon coin-icon position-relative">$
-						<p class="game-element-text gold-info-text">Use <span class="gold-icon-text">Gold</span> to purchase items from
-							shop</p>
-						<div class="icon-text-bg">
-							<span class="goldText">50</span>
-						</div>
-					</div>
-					<div class="game-element-icon health-icon position-relative">+
-						<p class="game-element-text health-info-text">increase Max <span class="health-icon-text">Health</span> to
-							increase HP of character</p>
-						<div class="icon-text-bg">
-							<span class="healthText">100</span>
-						</div>
 					</div>
 				</div>
 				<div class="energy-box position-absolute flex-align flex-justify">
@@ -208,7 +183,55 @@
 						<div class="energy-segment"></div>
 					</div>
 				</div>
-				<p class="dialog position-fixed">Welcome to Dragon Repeller. You must defeat the dragon that is preventing people from leaving the town. Use the buttons above to go somewhere.</p>
+				<div class="hero-skills position-absolute">
+					<div class="skills">
+						<div class="skill-cooldown"></div>
+						<img class="skill-image" src="assests/placeholder.png" aria-label="Skill"/>
+						<p class="skill-cost">1</p>
+					</div>
+					<div class="skills">
+						<div class="skill-cooldown"></div>
+						<img class="skill-image" src="assests/placeholder.png" aria-label="Skill"/>
+						<p class="skill-cost">1</p>
+					</div>
+					<div class="skills">
+						<div class="skill-cooldown"></div>
+						<img class="skill-image" src="assests/placeholder.png" aria-label="Skill"/>
+						<p class="skill-cost">1</p>
+					</div>
+					<div class="skills">
+						<img class="skill-image" src="assests/run.jpeg" aria-label="Skill"/>
+					</div>
+				</div>
+
+				<div class="hero-stats flex flex-align position-fixed">
+					<div class="game-element-icon xp-icon position-relative">
+						<p class="game-element-text xp-info-text info-text">
+							Increase <span class="xp-icon-text">Level</span> by getting <span class="xp-icon-text">xp</span> from
+							monsters to improve your damage
+						</p>
+						<div class="icon-text-bg">
+							<div class="xp-progress-bar progress-bar"></div>
+							<span class="xpText">0</span>
+						</div>
+						<span class="levelText">1</span>
+					</div>
+					<div class="game-element-icon coin-icon position-relative">$
+						<p class="game-element-text gold-info-text info-text">Use <span class="gold-icon-text">Gold</span> to purchase items from
+							shop</p>
+						<div class="icon-text-bg">
+							<span class="goldText">50</span>
+						</div>
+					</div>
+					<div class="game-element-icon health-icon position-relative">+
+						<p class="game-element-text health-info-text info-text">increase Max <span class="health-icon-text">Health</span> to
+							increase HP of character</p>
+						<div class="icon-text-bg">
+							<span class="healthText">100</span>
+						</div>
+					</div>
+				</div>
+				<p class="dialog position-fixed">Welcome Savior. You have to defeat the dragon. Use the ? above for info.</p>
 			</div>
 		</div>
 		<div class="lucky-box width-height-100 flex-align flex-justify flex-column">
