@@ -610,6 +610,11 @@ function skillButtons() {
     skillIcons[1].onclick = () => attack(heros[currentHero].skills[1]);
     skillIcons[2].onclick = () => attack(heros[currentHero].skills[2]);
     skillIcons[3].onclick = goTown;
+
+    const skillCosts = document.querySelectorAll(".skill-cost");
+    skillCosts[0].innerText = heroSkills[heros[currentHero].skills[0]].energyCost / 20;
+    skillCosts[1].innerText = heroSkills[heros[currentHero].skills[1]].energyCost / 20;
+    skillCosts[2].innerText = heroSkills[heros[currentHero].skills[2]].energyCost / 20;
 }
 skillButtons();
 function update(location) {
@@ -1021,22 +1026,30 @@ function goFight() {
 function monsterProgress(hp) {
     const monsterHpText = document.querySelector(".monster-hp");
     const monsterCurrentHealth = document.querySelector(".monster-progress");
-    let monsterPercent = (hp / monsters[fighting].health) * 100;
+    let monsterPercent;
+    if(hp > 0)
+        monsterPercent = (hp / monsters[fighting].health) * 100;
+    else
+        monsterPercent = 1;
     monsterCurrentHealth.style.width = monsterPercent + "%";
-    monsterHpText.innerText = hp + " / " + monsters[fighting].health;
+    monsterHpText.innerText = (hp > 0 ? hp : 0) + " / " + monsters[fighting].health;
     healthBarColor(monsterCurrentHealth, monsterPercent);
 }
 function playerProgress(hp) {
     const heroHp = document.querySelector(".hero-hp");
     const playerCurrentHealth = document.querySelector(".hero-progress");
-    let playerPercent = (hp / maxHealth) * 100;
+    let playerPercent;
+    if(hp > 0)
+        playerPercent = (hp / maxHealth) * 100;
+    else
+        playerPercent = 1;
     playerCurrentHealth.style.width = playerPercent + "%";
-    heroHp.innerText = hp + " / " + maxHealth;
+    heroHp.innerText = (hp > 0 ? hp : 0) + " / " + maxHealth;
     healthBarColor(playerCurrentHealth, playerPercent);
 }
 function healthBarColor(name, percent) {
     let color = "#44cc44";
-    if (percent < 60 && percent > 25) {
+    if (percent < 50 && percent > 25) {
         color = "#cccc44";
     } else if (percent <= 25) {
         color = "#cc4444";

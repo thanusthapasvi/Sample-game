@@ -640,11 +640,13 @@ main {
 	bottom: calc(var(--bars-height) + 1rem);
 	background-color: var(--dialog-bg);
 	color: white;
+	border: 1px solid rgba(255, 255, 255, 0.5);
 	transform: translateX(-50%);
 	text-align: center;
 	font-size: clamp(0.9rem, 4vw, 1.3rem);
 	padding: 0.5rem 2rem;
 }
+
 .hero-profile {
 	top: -2%;
 	left: 50%;
