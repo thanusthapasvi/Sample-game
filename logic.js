@@ -53,18 +53,16 @@ const shopLight5 = new THREE.PointLight(0xffffff, 3, 5);
 shopLight5.position.set(3, 1, -9);
 world.add(shopLight5);
 
-const dragonLight1 = new THREE.PointLight(0xff33ff, 10, 0.5);
-dragonLight1.position.set(10, 2.5, 5.1);
+
+const dragonLight1 = new THREE.PointLight(0xff33ff, 10, 5);
+dragonLight1.position.set(7, 3.5, 5.5);
 world.add(dragonLight1);
-const dragonLight2 = new THREE.PointLight(0xff33ff, 10, 0.5);
-dragonLight2.position.set(9.5, 2.5, 6);
+const dragonLight2 = new THREE.PointLight(0xff33ff, 5, 5);
+dragonLight2.position.set(9, 2.5, 3);
 world.add(dragonLight2);
-const dragonLight3 = new THREE.PointLight(0xff33ff, 10, 5);
-dragonLight3.position.set(6, 2.5, 5);
-world.add(dragonLight3);
-const dragonLight4 = new THREE.PointLight(0xff33ff, 5, 5);
-dragonLight4.position.set(9, 3, 3);
-world.add(dragonLight4);
+
+// const lightHelper = new THREE.PointLightHelper(dragonLight1, 0.2);
+// worldScene.add(lightHelper);
 
 // loading world model
 loader.load(
@@ -94,14 +92,10 @@ function setupTorches(root) {
     });
 }
 const torchFires = [];
-
 function createTorchFire(torchEmpty) {
     const fireLight = new THREE.PointLight(0xffaa33, 2.5, 6);
     fireLight.position.set(0, 0.5, 0); // EMPTY origin
     torchEmpty.add(fireLight);
-
-    //   const lightHelper = new THREE.PointLightHelper(fireLight, 0.2);
-    // scene.add(lightHelper);
 
     const fireTex = new THREE.TextureLoader().load("assests/fire.png");
     const fireMat = new THREE.SpriteMaterial({
@@ -126,7 +120,7 @@ const rightButton = document.querySelector(".right-button");
 
 function rotateWorld(direction) {
     if (direction === "left") {
-        if (Math.abs(targetRotation - THREE.MathUtils.degToRad(0)) < 0.001)
+        if (Math.abs(targetRotation == 0))
             targetRotation = THREE.MathUtils.degToRad(-120);
         else if (Math.abs(targetRotation - THREE.MathUtils.degToRad(120)) < 0.001)
             targetRotation = THREE.MathUtils.degToRad(0);
@@ -134,7 +128,7 @@ function rotateWorld(direction) {
             targetRotation = THREE.MathUtils.degToRad(120);
     }
     else if (direction === "right") {
-        if (Math.abs(targetRotation - THREE.MathUtils.degToRad(0)) < 0.001)
+        if (Math.abs(targetRotation == 0))
             targetRotation = THREE.MathUtils.degToRad(120);
         else if (Math.abs(targetRotation - THREE.MathUtils.degToRad(120)) < 0.001)
             targetRotation = THREE.MathUtils.degToRad(-120);
@@ -144,8 +138,13 @@ function rotateWorld(direction) {
     navigate();
 }
 window.addEventListener("keydown", (e) => {
-    if (e.key.toLowerCase() === "a") rotateWorld("left");
-    if (e.key.toLowerCase() === "d") rotateWorld("right");
+    closeAll();
+    if (e.key.toLowerCase() === "a") {
+        rotateWorld("left");
+    }
+    if (e.key.toLowerCase() === "d") {
+        rotateWorld("right");
+    }
 });
 leftButton.addEventListener("click", () => {
     closeAll();
@@ -157,12 +156,12 @@ rightButton.addEventListener("click", () => {
 });
 
 function closeAll() {
-    isShopOpen = true;
-    goShop();
-    isHeroOpen = true;
-    openHero();
-    isInventoryOpen = true;
-    openInventory();
+    if(isShopOpen)
+        goShop();
+    if(isHeroOpen)
+        openHero();
+    if(isInventoryOpen)
+        openInventory();
     pageWindow.style.display = "none";
 }
 
@@ -644,10 +643,12 @@ function update(location) {
         leftButton.style.display = "none";
         rightButton.style.display = "none";
         mainButton.style.display = "none";
+        worldRenderer.domElement.style.display = "none"; //to hide 3d world in fight
     } else {
         leftButton.style.display = "block";
         rightButton.style.display = "block";
         mainButton.style.display = "block";
+        worldRenderer.domElement.style.display = "block";
     }
     if(location.name === "lose" || location.name === "win") {
         gameOverPop(location.name);
@@ -1070,12 +1071,18 @@ function attack(skill) {
     playerProgress(health);
     monsterProgress(monsterHealth);
     if (health <= 0) {
-        lose();
+        setTimeout(() => {
+            lose();
+        }, 500);
     } else if (monsterHealth <= 0) {
         if (fighting === 3) {
-            winGame();
+            setTimeout(() => {
+                winGame();
+            }, 500);
         } else {
-            defeatMonster();
+            setTimeout(() => {
+                defeatMonster();
+            }, 1000);
         }
     }
     if(currentWeapon < 3) {
@@ -1228,12 +1235,21 @@ function luckResult(rarity) {
 /* Lucky Block End*/
 
 /* Animations and Visuals */
-document.querySelectorAll('.bar-buttons, .page-item, .shop-page-item, .skills')
+document.querySelectorAll('.bar-buttons, .page-item, .shop-page-item, .skills, .nav-button')
 .forEach(btn => {
     btn.addEventListener('click', () => {
         btn.classList.add('bounce-animation');
         setTimeout(() => {
             btn.classList.remove('bounce-animation');
+        }, 400);
+    });
+});
+document.querySelectorAll(".main-button")
+.forEach(btn => {
+    btn.addEventListener('click', () => {
+        btn.classList.add('bounce-transform');
+        setTimeout(() => {
+            btn.classList.remove('bounce-transform');
         }, 400);
     });
 });
