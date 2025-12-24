@@ -138,6 +138,9 @@ function rotateWorld(direction) {
     navigate();
 }
 window.addEventListener("keydown", (e) => {
+    if(isShopOpen || isHeroOpen || isInventoryOpen || isPageOpen) {
+        return;
+    }
     closeAll();
     if (e.key.toLowerCase() === "a") {
         rotateWorld("left");
@@ -526,19 +529,22 @@ const heroSkills = [
         skillId: 0,
         name: "Sword Slash",
         energyCost: 20,
-        power: 15
+        power: 15,
+        skillClass: "skill0"
     },
     {
         skillId: 1,
         name: "Energy Slash",
         energyCost: 40,
-        power: 50
+        power: 50,
+        skillClass: "skill1"
     },
     {
         skillId: 2,
         name: "Multi Cut",
         energyCost: 40,
-        power: 40
+        power: 40,
+        skillClass: "skill2"
     }
 ]
 const heros = [
@@ -617,6 +623,7 @@ function skillButtons() {
     skillCosts[2].innerText = heroSkills[heros[currentHero].skills[2]].energyCost / 20;
 }
 skillButtons();
+let isPageOpen = false;
 function update(location) {
     monsterStats.style.display = "none";
     heroBattleStats.style.display = "none";
@@ -638,9 +645,13 @@ function update(location) {
     if (location.name == "cave") {
         pageWindow.style.display = "flex";
         monstersPage();
+        isPageOpen = true;
+        closeNavButton();
     } else {
         pageWindow.style.display = "none";
         shopPageWindow.style.display = "none";
+        isPageOpen = false;
+        closeNavButton();
     }
     
     if(location.name == "fight") {
@@ -689,6 +700,14 @@ function monstersPage() {
     pageTiles[1].onclick = fightSlimeGroup;
     pageTiles[2].onclick = fightBeast;
 }
+function closeNavButton() {
+    const navLayer = document.querySelector(".nav-layer");
+    const shouldHide = isShopOpen || isHeroOpen || isInventoryOpen || isPageOpen;
+    if(window.innerWidth < 750) {
+        navLayer.style.display = shouldHide ? "none" : "block";
+    }
+}
+
 function goTown() {
     playTeleportAudio();
     buttonSoundEnabled = false;
@@ -701,7 +720,6 @@ let isShopOpen = false;
 function goShop() {
     goTown();
     buttonSoundEnabled = false;
-    // update(locations[1]);
 
     const shopPageTiles = document.querySelectorAll('.shop-page-item');
     shopPageTiles[0].onclick = buyHealthRegen;
@@ -715,6 +733,7 @@ function goShop() {
         shop.classList.remove("active-tab");
         shopPageWindow.style.display = "none";
         isShopOpen = false;
+        closeNavButton();
     } else {
         shopPageWindow.style.display = "block";
         shopPageWindow.classList.remove('floating-ani');
@@ -733,6 +752,7 @@ function goShop() {
         }, 400);
         dialog.innerText = "You Enter Shop";
         isShopOpen = true;
+        closeNavButton();
     }
 }
 
@@ -776,6 +796,7 @@ function openInventory() {
         bag.classList.remove('active-tab');
         isInventoryOpen = false;
         dialog.style.display = "block";
+        closeNavButton();
     } else {
         inventoryWindow.classList.remove('floating-ani');
         inventoryWindow.style.display = "flex";
@@ -785,6 +806,7 @@ function openInventory() {
         }, 500);
         bag.classList.add('active-tab');
         dialog.style.display = "none";
+        closeNavButton();
     }
 }
 function openHero() {
@@ -797,12 +819,14 @@ function openHero() {
         hero.classList.remove('active-tab');
         isHeroOpen = false;
         dialog.style.display = "block";
+        closeNavButton();
     } else {
         heroWindow.classList.remove('floating-ani');
         heroWindow.style.display = "flex";
         isHeroOpen = true;
         hero.classList.add('active-tab');
         dialog.style.display = "none";
+        closeNavButton();
         setTimeout(() => {
             heroWindow.classList.add('floating-ani');
         }, 500);
@@ -1064,6 +1088,13 @@ function attack(skill) {
             dialog.innerText = "The " + monsters[fighting].name + " attacks. ";
             dialog.innerText += " You used your skill " + heroSkills[skill].name + ". ";
 
+            const skillAttack = document.querySelector("." + heroSkills[skill].skillClass);
+            if(skillAttack != null) {
+                skillAttack.style.display = "block";
+                setTimeout(() => {
+                    skillAttack.style.display = "none";
+                }, 700);
+            }
             let monsterhitAmount = weapons[currentWeapon].power + Math.floor(Math.random() * (heroSkills[skill].power / 100 * heros[currentHero].attackPower)) + level;
             useEnergy(heroSkills[skill].energyCost);
 
