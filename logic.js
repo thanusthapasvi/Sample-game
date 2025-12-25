@@ -450,7 +450,6 @@ const pageWindow = document.querySelector(".page-box");
 const heroWindow = document.querySelector(".hero-profile");
 
 const heroLevelText = document.querySelector(".info-level");
-const heroWeaponText = document.querySelector(".info-weapon");
 
 const back = document.querySelector('.top-button1');
 const shop = document.querySelector('.top-button2');
@@ -462,9 +461,12 @@ const xpText = document.querySelector(".xpText");
 const levelText = document.querySelector(".levelText");
 const healthText = document.querySelector(".healthText");
 
-const monsterStats = document.querySelector(".monster-battle-stats");
 const heroBattleStats = document.querySelector(".hero-battle-stats");
+const heroBattleName = document.querySelector(".heroName");
+const heroBattleLevel = document.querySelector(".heroLevel");
 const heroBattleSkills = document.querySelector(".hero-skills");
+
+const monsterStats = document.querySelector(".monster-battle-stats");
 const monsterName = document.querySelector(".monsterName");
 const monsterLevel = document.querySelector(".monsterLevel");
 
@@ -489,8 +491,8 @@ textUpdates();
 const monsters = [
     {
         name: "slime",
-        level: 2,
-        health: 20,
+        level: 3,
+        health: 100,
         image: "assests/slime.png",
         scaleX: 0.7,
         scaleY: 0.5,
@@ -499,7 +501,7 @@ const monsters = [
     {
         name: "slime group",
         level: 10,
-        health: 100,
+        health: 300,
         image: "assests/slimeGroup.png",
         scaleX: 0.4,
         scaleY: 0.4,
@@ -508,7 +510,7 @@ const monsters = [
     {
         name: "beast",
         level: 15,
-        health: 150,
+        health: 450,
         image: "assests/beast1.png",
         scaleX: 0.8,
         scaleY: 0.6,
@@ -517,7 +519,7 @@ const monsters = [
     {
         name: "dragon",
         level: 50,
-        health: 500,
+        health: 800,
         image: "assests/dragon.png",
         scaleX: 0.8,
         scaleY: 0.6,
@@ -552,7 +554,7 @@ const heroSkills = [
 ]
 const heros = [
     {
-        name: "dragon repeller",
+        name: "RPG Kight",
         normalSkill: 0,
         energySkill: 1,
         attackPower: 50,
@@ -562,7 +564,7 @@ const heros = [
 const locations = [
     {
         name: "Hero",
-        text: "You are in the town. You see a sign that says \"Store\".",
+        text: "You are in the town. You see a sign that says \"Shop\".",
         bg: "url('assests/town.jpg')",
         rotation: 0
     },
@@ -906,6 +908,10 @@ function updateInventory() {
 }
 function updateHero() {
     updateLevel();
+    const heroNameText = document.querySelector(".hero-name");
+    const heroWeaponText = document.querySelector(".info-weapon");
+
+    heroNameText.innerText = heros[currentHero].name;
     heroWeaponText.innerText = weapons[currentWeapon].name;
 }
 
@@ -1047,8 +1053,12 @@ function goFight() {
     update(locations[2]);
 
     monsterHealth = monsters[fighting].health;
+
     monsterName.innerText = monsters[fighting].name;
     monsterLevel.innerText = monsters[fighting].level;
+
+    heroBattleName.innerText = heros[currentHero].name;
+    heroBattleLevel.innerText = level;
 
     monsterStats.style.display = "flex";
     heroBattleStats.style.display = "flex";
@@ -1157,19 +1167,19 @@ function attack(skill) {
     }, 500);
 }
 function getMonsterAttackValue(level) {
-    const hit = (level * 5) - (Math.floor(Math.random() * xp) + level);
+    const hit = Math.floor(Math.abs((level * 3) - (Math.floor(Math.random() * (level * 10)) / 10)));
     return hit > 0 ? hit : 0;
 }
 
 function isMonsterHit() {
-    return Math.random() > .1 || health < 25;
+    return Math.random() > .05;
 }
 
 function defeatMonster() {
     const prevGold = gold;
     const prevXp = xp;
-    gold += Math.floor(monsters[fighting].level * 6.7);
-    xp += monsters[fighting].level;
+    gold += Math.floor(Math.random() * monsters[fighting].level * 5);
+    xp += Math.floor(Math.random() * monsters[fighting].level * 10);
     animateNumber(goldText, prevGold, gold);
     iconsPulse("coinIcon");
     animateNumber(xpText, prevXp, xp);
@@ -1180,7 +1190,7 @@ function defeatMonster() {
 }
 function updateLevel() {
     const xpProgressBar = document.querySelector(".xp-progress-bar");
-    const levelXp = [0, 150, 250, 400, 600, 800, 1000, 1300, 1600, 2000];
+    const levelXp = [0, 30, 80, 180, 300, 450, 900, 1250, 1500, 1800];
     for (let i = 1; i < levelXp.length - 1; i++) {
         if (xp > 2000) {
             level = 10;

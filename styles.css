@@ -184,11 +184,11 @@
 @keyframes energyPulse {
 	0%, 50%, 100% {
 		transform: scaleY(1);
-		border: 0.5px solid black;
+		border: 1px solid black;
 	}
 	25%, 75% {
 		transform: scaleY(1.2);
-		border: 0.5px solid var(--gold);
+		border: 2px solid var(--gold);
 	}
 }
 .button {
@@ -712,7 +712,7 @@ main {
 	font-size: 1.2rem;
 	color: black;
 }
-.info-name {
+.hero-name {
 	position: absolute;
 	top: 21%;
 	left: 50%;
@@ -969,12 +969,13 @@ main {
 	height: 0.9rem;
 	background-color: #555;
 	background: linear-gradient(to right, var(--accent-2) 75%, #555 75%);
+	border-radius: 0.2rem;
 }
 .energy-segment {
 	width: calc(100% / 5);
 	height: 100%;
 	background-color: transparent;
-	border: 0.5px solid black;
+	border: 1px solid black;
 	border-radius: 0.2rem;
 }
 .game-over-cover {
