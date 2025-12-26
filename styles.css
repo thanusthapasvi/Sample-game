@@ -1430,7 +1430,7 @@ main {
 }
 .ad-cover {
 	width: clamp(300px, 80%, 450px);
-	min-height: 90% !important;
+	height: clamp(650px, 90%, 850px) !important;
 	background-color: var(--accent);
 	border-radius: 1rem;
 	padding: 1rem;
