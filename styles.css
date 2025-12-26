@@ -1425,6 +1425,7 @@ main {
 	width: 100%;
 	height: 100%;
 	background-color: var(--dialog-bg);
+	backdrop-filter: blur(1rem);
 	display: none;
 	z-index: 100;
 }
