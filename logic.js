@@ -1425,11 +1425,14 @@ const xMark = document.querySelector(".closeAd");
 adBox.addEventListener('click', showAd);
 xMark.addEventListener('click', () => {
     adPop.style.display = "none";
-    gainGold(10);
+    gainGold(5);
     xMark.style.display = "none";
 });
 function showAd() {
     adPop.style.display = "flex";
+    requestAnimationFrame(() => {
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    });
     setTimeout(() => {
         xMark.style.display = "block";
     }, 1000);
